@@ -1,0 +1,18 @@
+services:
+  db:
+    image: mysql:5.7.36
+    container_name: my_db
+    restart: always
+    volumes:
+      - ./db:/var/lib/mysql
+      - ./conf/my.cnf:/etc/my.cnf
+      # 数据库初始化脚本，当Mysql容器首次启动时，会在 /docker-entrypoint-initdb.d目录下扫描 .sh，.sql，.sql.gz类型的文件。如果这些类型的文件存在，将执行它们来初始化一个数据库；
+      - ./init/:/docker-entrypoint-initdb.d/
+    environment:
+      - MYSQL_ROOT_PASSWORD=admin123
+      # 指定初始化sql文件的数据库
+      - MYSQL_DATABASE=my_db
+      - TZ=Asia/Shanghai
+    ports:
+      - 3301:3306
+

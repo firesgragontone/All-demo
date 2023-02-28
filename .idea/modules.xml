@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/All-demo.iml" filepath="$PROJECT_DIR$/.idea/All-demo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/codeDesign/codeDesign.iml" filepath="$PROJECT_DIR$/codeDesign/codeDesign.iml" />
+      <module fileurl="file://$PROJECT_DIR$/esSearch/esSearch.iml" filepath="$PROJECT_DIR$/esSearch/esSearch.iml" />
+      <module fileurl="file://$PROJECT_DIR$/serialize/serialize.iml" filepath="$PROJECT_DIR$/serialize/serialize.iml" />
+    </modules>
+  </component>
+</project>
