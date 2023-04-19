@@ -14,9 +14,9 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="All-demo" target="1.8" />
-      <module name="codeDesign" target="8" />
-      <module name="esSearch" target="1.7" />
-      <module name="serialize" target="8" />
+      <module name="codeDesign" target="1.8" />
+      <module name="esSearch" target="1.8" />
+      <module name="serialize" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
