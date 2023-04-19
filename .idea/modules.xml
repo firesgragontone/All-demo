@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/All-demo.iml" filepath="$PROJECT_DIR$/.idea/All-demo.iml" />
       <module fileurl="file://$PROJECT_DIR$/codeDesign/codeDesign.iml" filepath="$PROJECT_DIR$/codeDesign/codeDesign.iml" />
       <module fileurl="file://$PROJECT_DIR$/esSearch/esSearch.iml" filepath="$PROJECT_DIR$/esSearch/esSearch.iml" />
+      <module fileurl="file://$PROJECT_DIR$/mdDoc/mdDoc.iml" filepath="$PROJECT_DIR$/mdDoc/mdDoc.iml" />
       <module fileurl="file://$PROJECT_DIR$/serialize/serialize.iml" filepath="$PROJECT_DIR$/serialize/serialize.iml" />
     </modules>
   </component>
