@@ -281,3 +281,15 @@ new ArrayList<String>(){
 **什么是流式编程**：流式编程通常是对集合处理，让集合中的对象像水流一样流动，分别进行去重、过滤、映射等操作，就和批量化生产线一样。利用流，我们无需迭代集合中的元素，就可以提取和操作它们，这些操作通常被组合在一起，在流上形成一条操作管道。
 
 **流式编程的优点**：编程的逻辑分明，按照顺序依次执行，同时代码短小。
+
+### 时间处理
+
+```
+// 获取今年第一天及最后一天
+LocalDateTime firstDayOfYear = LocalDateTime.of(LocalDate.from(ofDate.with(TemporalAdjusters.firstDayOfYear())), LocalTime.MIN);
+LocalDateTime lastDayOfYear = LocalDateTime.of(LocalDate.from(ofDate.with(TemporalAdjusters.lastDayOfYear())), LocalTime.MAX);
+
+LocalDateTime sixSectionDate = LocalDateTime.of(LocalDate.of(ofDate.getYear(), Month.JUNE, Month.JUNE.maxLength()), LocalTime.MAX);
+LocalDateTime sevenSectionDate = LocalDateTime.of(LocalDate.of(ofDate.getYear(), Month.JULY, 1), LocalTime.MIN);
+```
+
