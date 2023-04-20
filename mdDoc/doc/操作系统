@@ -1,0 +1,125 @@
+[TOC]
+
+
+
+# 1.强制关闭进程（win10)
+
+1.查找进程
+
+1.1 按端口查找进程  netstat -aon|findstr "8080"
+
+1.2 模糊搜索进程      tasklist | findstr "finalShell"
+
+2.强制杀死进程
+
+taskkill -PID 19724-f
+
+# 如何查看局域网内所有的IP (win10)
+
+10.20.4.151
+
+ 172.20.64.1
+
+172.25.160.1
+
+for /L %i IN (1,1,254) DO ping -w 2 -n 1 10.20.4.%i
+
+# mysql8设置访问权限
+
+3.进入数据库
+
+mysql -uroot -p123456 
+
+4.mysql8设置访问权限
+
+```msyql
+1.登录数据库
+mysql -uroot -p123456
+2.进入mysql库
+use mysql;
+3.#更新域属性，'%'表示允许外部访问：
+update user set host='%' where user ='root';
+4.#刷新权限
+FLUSH PRIVILEGES;  
+5.再执行授权语句：
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%'WITH GRANT OPTION;
+6.修改加密方式
+ mysql8.0 引入了新特性 caching_sha2_password；这种密码加密方式Navicat 12以下客户端不支持；
+ 2，使用命令将他修改成mysql_native_password加密模式：
+ update user set plugin='mysql_native_password' where user='root';
+
+ 
+```
+
+
+
+# linux参数vm.swappiness（页交换设置）
+
+交换可以发生在单独的分区或交换文件上。该分区速度更快，并且受到许多数据库应用程序的青睐。文件方法更加灵活（请参阅Debian GNU / Linux中的dphys-swapfile软件包[7]）。具有多个用于交换的物理设备允许Linux内核选择最快速可用的设备（较低的延迟）。
+
+vm.swappiness
+vm.swappiness的默认值为60，它表示激活交换之前可用内存的百分比。值越低，使用的交换越少，并且物理内存中保留的内存页越多。
+
+60的值是一个折衷方案，非常适合现代台式机系统。建议将较小的值用于服务器系统。正如Red Hat Performance Tuning手册指出的那样[8]，对于数据库工作负载，建议使用较小的swappiness值。例如，对于Oracle数据库，Red Hat建议将swappiness的值设置为10。相反，对于MariaDB数据库，建议将swappiness的值设置为1 [9]。
+
+更改值直接影响Linux系统的性能。定义了这些值：
+
+* 0：禁用交换
+* 1：不完全禁用交换的最小数量
+* 10：当系统中有足够内存时为提高性能而推荐的值
+* 100：主动交换
+
+如上所示，cat命令有助于读取该值。同样，sysctl命令为您提供相同的结果：
+
+＃sysctl vm.swappiness
+vm.swappiness = 60
+＃
+请记住，sysctl命令仅对管理用户可用。要设置该值，请在/ proc文件系统中临时设置该值，如下所示：
+
+＃回声 10 > / PROC / SYS / VM / swappiness
+或者，您可以使用sysctl命令，如下所示：
+
+
+＃的sysctl -w vm.swappiness = 10
+要永久设置该值，请以管理用户身份打开文件/etc/sysctl.conf并添加以下行：
+
+vm.swappiness = 10
+————————————————
+原文链接：https://blog.csdn.net/allway2/article/details/115750203
+
+
+
+# Shell编程：/bin/bash和/bin/sh的区别
+
+简单的讲，/bin/sh是早期版本，是一种便携方式的解释性脚本语言，自带有posix便携式功能，以该方式声明的脚本，脚本中间发生错误会终止脚本的运行，不再运行下面的代码。
+
+/bin/bash，是/bin/sh的升级版，默认没有开启posix便携模式，所以以/bin/bash声明的脚本，中间即使发生错误，依然会继续向下运行。
+
+也就是说：shell脚本，第一行写成 #!/bin/bash --posix，脚本执行效果跟#!/bin/sh是一样的。
+————————————————
+原文链接：https://blog.csdn.net/succing/article/details/122450677
+
+```
+git branch：命令结果会列出当前所有分支
+
+（比如想把代码提交到branch分支）
+git checkout branch
+
+git status
+
+git pull：在提交代码之前需要先拉取代码，目的是为了保证你在提交文件后不回与别人提交的代码产生冲突，冲掉别人提交的代码。
+
+git stash：如果在拉取代码的时候报错，可能是因为本地的代码与拉取的代码有冲突，这时需要将本地代码暂存到栈里，之后再重新git pull。令：git stash后你的工作区状态为clear
+
+git stash pop：将暂存在栈上的文件重新移到工作区中
+
+git add . 或者 git add xxx
+
+命令：git add 文件名1 文件名2 …
+
+命令：git commit 文件名 -m “提交代码备注”
+
+
+
+```
+

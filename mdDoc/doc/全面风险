@@ -1,0 +1,493 @@
+1.展期申请
+form  放款(金额，期限，单位，起息时间，止息时间) 展期(金额，期限，单位，展期时间，终止时间，费率，原因，附件，项目) 
+
+	1.保存信息
+	
+	2.保存附件
+	
+	3.开始流程
+
+
+2.展期列表
+
+3.展期详情
+
+
+
+4.登录信息
+{
+	"captchaCode": "",
+	"password": "1234",
+	"rememberMe": "",
+	"slideKaptcha": 0,
+	"tenantCode": "csci_admin",
+	"username": "csciadmin"
+}
+
+
+5.发起发行放款流程
+1，放款事件ID，产品ID，项目ID
+2，根据项目ID查找项目信息
+3，新建消息任务DTO，保存事件ID，消息类型，消息标题，参数
+4，设置流程参数
+5，启动流程
+	发起流程
+	记录流程实例ID和项目的关系
+6，修改项目阶段为发行放款阶段
+7，修改放款状态为审核中
+
+
+
+
+修改计划：计划ID 应收增信费 实收日期 实收增信费 是否结清  实收备注
+
+
+实收服务费
+实收日期
+备注
+收费计划状态
+是否结清
+
+
+
+代码规范
+
+
+@Api(value="",tag={""})
+@ResControler
+@RequestMapping("")
+controller{
+	
+}
+
+
+
+1.新增详情页
+2.task里面添发送短信任务
+3.统计信息接口
+		StaticsIssueChargePlanDTO dto = new StaticsIssueChargePlanDTO();
+        dto.setProjectId(form.getProjectId());
+
+        //应收统计
+        List<StaticsIssueChargePlanDTO> receiveList = issueCreditChargePlanMapper.staticsGroupByType(dto);
+        List<StaticsIssueChargePlanVO> vos = new ArrayList<>();
+        if (CollectionUtil.isNotEmpty(receiveList)) {
+            vos = wrapReceiveListVO(receiveList);
+        }
+    
+        //实收统计
+        dto.setSumReceiptsAmount(BigDecimal.ONE);
+        List<StaticsIssueChargePlanDTO> receiptsList = issueCreditChargePlanMapper.staticsGroupByType(dto);
+        if (CollectionUtil.isNotEmpty(receiptsList)) {
+            for (StaticsIssueChargePlanDTO receipt : receiptsList) {
+                StaticsIssueChargePlanVO vo = vos.stream().filter(item -> item.getChargePlanType().equals(receipt.getChargePlanType())).findFirst().orElse(null);
+                if (ObjectUtil.isNull(vo)) {
+                    continue;
+                }
+                vo.setSumReceiptsTerm(receipt.getSumReceiptsTerm());
+                vo.setSumReceiptsAmount(receipt.getSumReceiptsAmount());
+            }
+        }
+    
+        long[] issueIds = vos.stream().mapToLong(item -> item.getIssueId()).distinct().toArray();
+        List<IssueInfo> issueInfos = issueInfoService.listByIds(Arrays.asList(issueIds));
+        for (IssueInfo issueInfo : issueInfos) {
+            StaticsIssueChargePlanVO vo = vos.stream().filter(item -> item.getIssueId().longValue() == issueInfo.getId()).findFirst().orElse(null);
+            if (ObjectUtil.isNull(vo)) {
+                continue;
+            }
+            vo.setIssueCode(issueInfo.getIssueCode());
+            vo.setIssueName(issueInfo.getIssueName());
+        }
+        return vos;
+
+
+
+
+表增加字段：
+1.需要在数据库的表增加字段
+2.需要在对应的mapper.java上增加字段
+3.需要在对应的xml文件上加
+
+
+流程引擎
+1.启动引擎
+  processInstance = iRbmProcessService.startProcessInstanceByKey(
+                    projectId.toString()
+                    , ""
+                    , ProjectActivityTypeEnum.DUE_DILIGENCE
+                    , messageTask, processParams);
+
+
+
+2.processRuntime.start(build());
+
+
+
+
+安装els
+docker pull docker.elastic.co/elasticsearch/elasticsearch:7.7.0
+
+
+
+win10杀进程
+netstat -aon|findstr 8090
+
+taskkill  -pid 45792 /F
+
+
+查看容器
+docker images
+启动elasticsearch
+docker run -d --name es_admin -p 9200:9200 elasticsearch
+
+
+启动fastdfs
+docker run -d --name fastdfs -p 22122:22122 morunchang/fastdfs
+
+
+
+
+
+cts接口
+1.公共信息接口（省市区域）
+2.债券信息接口
+3.城投报告
+4.Dass企业信息
+5.信用科技
+6.担保利差
+7.地产报告
+8.研究报告
+9.企业中标数据
+10.分保通用
+11.分保摘牌
+12.分保挂牌
+
+
+
+1.仅管理员可以发公告
+  1.设计表
+    公告类型
+    公告标题
+    发布时间
+    公告详情
+  2.附件保存
+  3.增加公告类型字典
+  4.管理员识别
+  5.按类型查询公告
+  6.按公告标题模糊查询
+  7.保存公告
+  8.修改公告
+
+
+
+mybatis复杂查询
+
+
+<!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, notice_type, notice_title, notice_content, notice_time, tenant_code, create_time, update_time
+    </sql>
+
+
+    <select id="listNoticeInfo" resultType="com.csci.china.rbms.business.model.NoticeInfo">
+        select <include refid="Base_Column_List"/> from pms_notice_info info
+        where 1=1
+        <!-- 可选查询 -->
+        <if test="null != condition.noticeTitle and condition.noticeTitle != ''">
+            and notice_title like concat('%', #{condition.noticeTitle}, '%')
+        </if>
+        <if test="null != condition.noticeType and condition.noticeType != ''">
+            and notice_type = #{condition.noticeType}
+        </if>
+        order by create_time DESC
+    </select>
+
+
+   <select id="staticsGroupByType" resultType="com.csci.china.rbms.business.dto.issue.StaticsIssueChargePlanDTO">
+        SELECT
+        id,
+        issue_id issueId,
+        project_id,
+        count( 1 ) sumReceiptsTerm,
+        sum( receipts_finance_amount ) sumReceiptsAmount,
+        sum( receive_finance_amount ) sumReceiveAmount,
+        charge_plan_type chargePlanType
+        FROM
+        pms_issue_finance_charge_plan
+        WHERE
+        project_id = #{projectId}
+        <if test="sumReceiptsAmount > 0">
+            AND receipts_finance_amount > 0
+        </if>
+        GROUP BY
+        charge_plan_type
+    </select>
+
+    <if test="condition.issueExpireStartDate != null">
+
+ <if test="condition.issueStatus !=null and condition.issueStatus.size > 0">
+            AND issue_status IN
+            <foreach collection="condition.issueStatus" item="element" open="(" separator=","
+                     close=")">
+                #{element}
+            </foreach>
+        </if>
+        <if test="condition.unprotectStatus !=null and condition.unprotectStatus.size > 0">
+            AND unprotect_status IN
+            <foreach collection="condition.unprotectStatus" item="element" open="(" separator=","
+                     close=")">
+                #{element}
+            </foreach>
+        </if>
+
+1.表信息
+
+
+
+1.公司信息
+
+pms_company_syn 公司信息同步表
+
+pms_company_warning  预警结果明细表
+
+2.项目过会
+
+ pms_conference_info       项目过会信息表
+
+ pms_conference_risk_org     项目过会风险主体表
+
+3.合同
+
+pms_contract_credit   增信函合同信息表
+
+pms_contract_file        合同文件信息表
+
+pms_contract_finance    融资协议合同信息表
+
+pms_contract_invest     投资协议合同信息表
+
+pms_contract_invest_org   投资协议合同-投资主体表
+
+pms_contract_letter    合同用信通知书表
+
+pms_contract_opinion   合同用印审批意见表
+
+pms_contract_signature  合同用印表
+
+4.客户信息
+
+pms_customer_info   客户信息表
+
+pms_customer_project_relation  客户项目关联表
+
+pms_customer_visit_info   客户接触记录表
+
+pms_guarantee_company    融担公司信息表
+
+pms_guarantors_list    保证企业/个人
+
+5.收费表
+
+pms_issue_bank_deposit   项目银行保证金表
+
+pms_issue_charge_confirm  收费确认表
+
+pms_issue_charge_item   发行放款项目收费详情
+
+pms_issue_credit   发行放款-增信服务要素基本信息表
+
+pms_issue_credit_balance   发行放款-增信服务要素-责任余额变动计划表
+
+pms_issue_credit_charge_plan   发行放款-增信要素-收费计划表
+
+pms_issue_extension  发行展期表
+
+pms_issue_finance  发行放款-财顾服务要素基本信息表
+
+pms_issue_finance_charge_plan  发行放款-服务要素-收费计划表
+
+pms_issue_info   发行放款信息表
+
+pms_issue_invest   发行放款-投资产品要素基本信息表
+
+pms_issue_invest_charge_plan 发行放款-投资要素-收费计划表
+
+pms_issue_invest_repayment  发行放款-投资产品要素-投资还本付息计划表
+
+pms_issue_promise_fee  项目履约金表
+
+pms_issue_refund  项目退费表
+
+pms_issue_refund_item  收款项目退款详情表
+
+6.公告表
+
+pms_notice_info  公告信息表
+
+7.抵押
+
+pms_pledge_list  抵质押物
+
+8.产品‘
+
+pms_product_info  产品信息表
+
+9.项目表
+
+pms_project_contribution 项目贡献计划表
+
+pms_project_contribution_member 项目贡献计划详情
+
+pms_project_coo 项目合作机构表
+
+pms_project_credit_info  增信项目业务要素表
+
+pms_project_element  增信项目业务要素表
+
+pms_project_flow_relation  项目阶段与流程实例关系记录表
+
+pms_project_info 项目基本信息表
+
+pms_project_info_temp    项目信息草稿表
+
+pms_project_invest_info   投资项目业务要素表
+
+pms_project_member  项目成员表
+
+pms_project_org   项目相关主体表
+
+pms_project_predict_issue  预计产品发行要素信息
+
+pms_project_relation  项目合作机构表
+
+pms_project_risk_mitigants  项目风险缓释措施表
+
+  pms_push_issue_info  报送项目信息表
+
+ pms_push_project  报送项目信息表
+
+pms_push_project_info   报送项目信息表
+
+10.债券信息
+
+pms_reinsure_bond  分保债券信息
+
+pms_reinsure_contacts  分保联系人
+
+ pms_reinsure_delisted  机构摘牌记录表
+
+pms_reinsure_file   分保附件
+
+ pms_reinsure_info  分保申请信息表
+
+pms_reinsure_object  分保机构信息
+
+pms_reinsure_risk  风险信用评估
+
+pms_reinsure_syn  分保代办同步表
+
+11.项目跟踪
+
+pms_track_plan 项目跟踪计划表
+
+pms_track_project_relation  项目跟踪关联表
+
+pms_track_record 项目跟踪记录表
+
+12.解保信息
+
+pms_unprotect_apply  解保申请表
+
+pms_unprotect_rel  解保数据关系表
+
+13 定时信息
+
+qrtz_cron_triggers  定时信息
+
+qrtz_execution_his   历史执行任务信息表
+
+qrtz_job_details 任务细节
+
+qrtz_locks  锁
+
+14 附件表
+
+sys_attachment 附件表
+
+15传阅
+
+sys_circulated_record  项目传阅记录表
+
+sys_circulated_rel  项目传阅人关系表
+
+16系统表
+
+sys_client  第三方客户信息表
+
+sys_client_interface  第三方客户接口信息表
+
+sys_client_rate_rule  限流规约表
+
+sys_client_role  第三方客户角色关联表
+
+ sys_data_column
+
+sys_data_line
+
+sys_dept  部门表
+
+sys_resource   菜单表
+
+sys_resource_bak  菜单表
+
+sys_resource_vue
+
+sys_role 角色表
+
+ sys_role_data_line  角色权限表
+
+sys_role_resource  角色和资源关联表
+
+sys_role_resource_bak  角色和资源关联表
+
+sys_tenant  租户表
+
+sys_tenant_resource  租户资源表
+
+sys_user  用户表
+
+sys_user_dept  用户部门表
+
+sys_user_role 用户角色表
+
+sys_wechat_work_config  企业微信配置
+
+sys_wechat_work_user  企业账号表
+
+
+
+
+
+```
+1.通过标签替换进行权限替换
+/*LT*/
+
+```
+
+![image-20220106103125117](C:\Users\Administrator.DESKTOP-80KRDB4\AppData\Roaming\Typora\typora-user-images\image-20220106103125117.png)
+
+```
+/**
+ * 根据特定字段去重
+ *
+ * @param keyExtractor
+ * @return {@link Predicate <T>}
+ * @author chenjy
+ * @date 2022-01-14 17:56
+ */
+public static <T> Predicate<T> distinctByKey(Function<? super T, Object> keyExtractor) {
+    Map<Object, Boolean> map = new HashMap<>();
+    return t -> map.putIfAbsent(keyExtractor.apply(t), Boolean.TRUE) == null;
+}
+```
