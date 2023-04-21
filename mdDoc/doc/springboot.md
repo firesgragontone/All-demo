@@ -63,3 +63,19 @@ initialize初始化模块
 ————————————————
 版权声明：本文为CSDN博主「Noodles Mars」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
 原文链接：https://blog.csdn.net/weixin_43922449/article/details/120435157
+
+# spring boot @Configuration(proxyBeanMethods = false) 详解
+
+### Lite模式
+
+类上标注有@Component注解
+类上标注有@ComponentScan注解
+类上标注有@Import注解
+类上标注有@ImportResource注解
+若类上没有任何注解，但类内存在@Bean方法
+标注有 @Configuration(proxyBeanMethods = false) ，注意：此值默认是true哦，需要显示改为false才算是Lite模式
+
+### Full模式
+
+在常见的场景中，@Bean方法都会在标注有@Configuration的类中声明，以确保总是使用“Full模式”，这么一来，交叉方法引用会被重定向到容器的生命周期管理，所以就可以更方便的管理Bean依赖。
+

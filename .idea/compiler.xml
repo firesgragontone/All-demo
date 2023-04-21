@@ -7,8 +7,9 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="esSearch" />
         <module name="serialize" />
+        <module name="reflect" />
+        <module name="esSearch" />
         <module name="codeDesign" />
       </profile>
     </annotationProcessing>
@@ -16,6 +17,7 @@
       <module name="All-demo" target="1.8" />
       <module name="codeDesign" target="1.8" />
       <module name="esSearch" target="1.8" />
+      <module name="reflect" target="1.8" />
       <module name="serialize" target="1.8" />
     </bytecodeTargetLevel>
   </component>

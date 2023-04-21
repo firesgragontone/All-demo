@@ -13,6 +13,7 @@
         <module>CodeDesign</module>
         <module>codeDesign</module>
         <module>esSearch</module>
+        <module>reflect</module>
     </modules>
     <dependencies>
         <dependency>

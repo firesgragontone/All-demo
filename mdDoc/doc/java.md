@@ -293,3 +293,13 @@ LocalDateTime sixSectionDate = LocalDateTime.of(LocalDate.of(ofDate.getYear(), M
 LocalDateTime sevenSectionDate = LocalDateTime.of(LocalDate.of(ofDate.getYear(), Month.JULY, 1), LocalTime.MIN);
 ```
 
+# Java如何从字符串中提取数字-**1.正则表达式**
+
+```java
+String str = "love234csdn3423java";
+String regEx = "[^0-9]";
+Pattern p = Pattern.compile(regEx);
+Matcher m = p.matcher(str);
+String result = m.replaceAll("").trim();
+```
+
