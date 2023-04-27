@@ -32,3 +32,4 @@ spring:
     restart:
       enabled: false
       additional-paths: src/main/java
+
