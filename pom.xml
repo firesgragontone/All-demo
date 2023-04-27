@@ -15,6 +15,7 @@
         <module>esSearch</module>
         <module>reflect</module>
         <module>redisDemo</module>
+        <module>doc-all</module>
     </modules>
     <dependencies>
         <dependency>
