@@ -1,4 +1,8 @@
-1.Redisson使用
+[TOC]
+
+
+
+# 1.Redisson使用分布式锁
 
 ```java
 RLock lock = redisson.getLock("aa");
@@ -60,22 +64,6 @@ Redis Cluster 采用数据分片机制，定义了 16384个 Slot槽位，集群�
 原文链接：https://blog.csdn.net/qq_20128967/article/details/108611161
 
 
-
-水平触发-边缘触发
-
-```
-在非阻塞IO中，通过Selector选出准备好的fd进行操作。有两种模式，一是水平触发（LT），二是边缘触发（ET）。
-
-在LT模式下，只要某个fd还有数据没读完，那么下次轮询还会被选出。而在ET模式下，只有fd状态发生改变后，该fd才会被再次选出。ET模式的特殊性，使在ET模式下的一次轮询必须处理完本次轮询出的fd的所有数据，否则该fd将不会在下次轮询中被选出。
-在Netty中，NioChannel体系是水平触发，EpollChannel体系是边缘触发。
-
-总结：
-Netty为了使每次轮询负载均衡，限制了每次从fd中读取数据的最大值，造成一次读事件处理并不会读完fd中的所有数据。在NioServerSocketChannel中，由于其工作在LT模式下，所以不需要做特殊处理，在处理完一个事件后直接从SelectionKey中移除该事件即可，如果有未读完的数据，下次轮询仍会获得该事件。而在EpollServerSocketChannel中，由于其工作在ET模式下，如果一次事件处理不把数据读完，需要手动地触发一次事件作为补偿，否则下次轮询将不会有触发的事件。
-```
-
-
-
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20200214215415435.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzIwMzc2OTgz,size_16,color_FFFFFF,t_70)
 
 ```shell
 keys OA_WARNING_MSG_CACHE_KEY*
@@ -162,3 +150,14 @@ value：12kd-dsj5ce-d4445-h4sd472
 ————————————————
 版权声明：本文为CSDN博主「七海健人」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
 原文链接：https://blog.csdn.net/minghao0508/article/details/124129910
+
+
+
+# redis ZSET操作
+
+| 序号 | 操作 | method                                  |
+| ---- | ---- | --------------------------------------- |
+| 1    | 新增 | zadd，zinterstore                       |
+| 2    | 删除 | zrem，zremrangeByRank，zremrangeByScore |
+| 3    | 修改 | zincrby                                 |
+| 4    | 查询 | zrange，zrangeByScore                   |
